@@ -1,0 +1,28 @@
+{
+  "name": "AgGame",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nodemon -w ./server/server.js -w nuxt.config.js ./server/server.js",
+    "build": "nuxt build",
+    "start": "set NODE_ENV=production & node ./server/server.js",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "core-js": "^3.6.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "express-validator": "^6.8.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.11.5",
+    "morgan": "^1.10.0",
+    "nuxt": "^2.14.6"
+  },
+  "devDependencies": {
+    "@nuxtjs/vuetify": "^1.11.2"
+  }
+}
