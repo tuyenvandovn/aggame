@@ -50,6 +50,7 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser())
 
 app.use('/api/user', require('./routes/user.js'))
+app.use('/api/admin', require('./routes/admin.js'))
 
 
 // We instantiate Nuxt.js with the options
