@@ -14,9 +14,9 @@ exports.listUser = async (req, res) => {
     const count = await User.countDocuments({});
 
     User.find({})
-                .skip(skip)
-                    .limit(per_page)
-                        .select('name phone firstname lastname status balance role ip')
+            .skip(skip)
+                .limit(per_page)
+                    .select('_id name phone firstname lastname status balance role ip')
                         .exec((err, resp) => {
                             if (resp) {
                                 return res.status(200).json({
@@ -112,7 +112,7 @@ exports.createUser = (req, res) => {
             return res.json({
                 user: { _id, name, phone, firstname, lastname, ip, balance, role, status  }
             })
-            
+
         }
         return res.status(400).json({
             error: 1,
@@ -121,5 +121,67 @@ exports.createUser = (req, res) => {
     })
 }
 exports.updateUser = (req, res) => {
-    console.log(24114)
+    const { id, password, balance, status, role, firstname, lastname, ip } = req.body;
+    User.findById({ _id: '5fcf97ea24c7ad101c473642' }).exec((err, user) => {
+        if (user) {
+            if (password) user.password = password;
+            if (balance) user.balance = balance;
+            if (status) user.status = status;
+            if (role) user.role = role;
+            if (firstname) user.firstname = firstname;
+            if (lastname) user.lastname = lastname;
+            if (ip) user.ip = ip;
+            user.save((err, newuser) => {
+                if (newuser) {
+                    const { _id, name, phone, firstname, lastname, status, role, ip, balance } = newuser;
+                    return res.status(200).json({
+                        user: { _id, name, phone, firstname, lastname, status, role, ip, balance }
+                    })
+                }
+                return res.status(400).json({
+                    error: 1,
+                    msg: 'An error occur'
+                })
+            })
+        }
+        if (err) {
+            return res.status(400).json({
+                error: 1,
+                msg: 'An error occur'
+            })
+        }
+    })
+}
+
+exports.singleUser = (req, res) => {
+    const { id } = req.params;
+    User.findOne({ _id: id }).select('_id name phone firstname lastname status role balance ip').exec((err, user) => {
+        if (user) {
+            return res.status(200).json(user)
+        }
+        return res.status(400).json({
+            error: 1,
+            msg: 'Not Found user'
+        })
+    })
+}
+
+exports.chekLogin = (req, res) => {
+    const _id = req.user._id;
+    console.log(_id)
+    User.findById({ _id }).select('_id name phone firstname lastname role status balance ip').exec((err, user) => {
+        if (user) {
+            const token = jwt.sign({ _id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            res.cookie('token', token, { maxAge });
+            return res.json({
+                status: 1,
+                token,
+                user
+            })
+        }
+        return res.status(400).json({
+            error: 1,
+            msg: 'Not Found user'
+        })
+    })
 }
